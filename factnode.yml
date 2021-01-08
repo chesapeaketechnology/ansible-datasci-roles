@@ -1,0 +1,15 @@
+---
+- name: "Configure factnode"
+  hosts: localhost
+  remote_user: "{{ admin_username }}"
+  become: true
+  pre_tasks:
+    - name: Wait for Consul to be available
+      wait_for:
+        port: 8500
+        host: "{{ consul_server }}"
+        delay: 120
+        timeout: 1800
+  roles:
+    - { role: "consul", private_ips: ["{{ consul_server }}"], is_server: false }
+    - role: "postgresql"

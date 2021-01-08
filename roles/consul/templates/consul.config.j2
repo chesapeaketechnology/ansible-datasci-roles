@@ -1,0 +1,25 @@
+{
+    "node_name": "{{ ansible_hostname }}",
+    "addresses": {
+        "http": "{{ ansible_facts['all_ipv4_addresses'] | last }} 127.0.0.1"
+    },
+{% if is_server == True %}
+    "server": true,
+{% else %}
+    "server": false,
+{% endif %}
+    "advertise_addr": "{{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "client_addr": "127.0.0.1 {{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "connect": {
+        "enabled": true
+    },
+{% if ansible_hostname == is_leader %}
+    "bootstrap": true,
+{% endif %}
+    "data_dir": "{{ consul_data_dir }}",
+{% if target_server_group is defined %}
+    "retry_join": ["{{ hostvars[groups[target_server_group][0]].private_ipv4_addresses[0] }}", "{{ hostvars[groups[target_server_group][1]].private_ipv4_addresses[0] }}"]
+{% else %}
+    "retry_join": ["{{ consul_server }}"]
+{% endif %}
+}

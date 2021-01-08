@@ -1,0 +1,83 @@
+---
+- name: "Configure worker VM nodes"
+  hosts: "{{ target_server_group }}"
+  remote_user: "{{ ansible_ssh_user }}"
+  become: true
+  vars:
+    ansible_python_interpreter: "/usr/bin/python2"
+    is_leader: "{{ groups[target_server_group][0] }}"
+  pre_tasks:
+    - meta: end_play
+      when: ansible_hostname != is_leader
+  roles:
+    - role: "common"
+    - role: "hadoop"
+    - {
+        role: "spark",
+        spark_master_ip: "{{ hostvars[groups[target_server_group][0]].private_ipv4_addresses[0] }}",
+      }
+    - role: "spark-cluster-admin"
+    - role: "notebook"
+    - role: "cloudalchemy.node-exporter"
+    - role: "consul"
+      vars:
+        is_leader: "{{ groups[target_server_group][0] }}"
+
+- name: "Store all Azure deployment facts to Consul from one node"
+  hosts: "{{ groups[target_server_group][0] }}"
+  become: true
+  tasks:
+    - name: "Azure deployment role"
+      include_tasks: "roles/azure-deployment-facts/tasks/main.yml"
+
+- name: "Start hadoop on one of the nodes (NameNode)"
+  hosts: "{{ groups[target_server_group][0] }}"
+  become: yes
+  become_user: hadoop
+  vars:
+    stat_file: "/etc/hadoop.installed"
+  tasks:
+    - name: NameNode Block
+      block:
+        - name: "Format namenode"
+          shell: "/usr/local/hadoop/bin/hdfs namenode -format -force -nonInteractive"
+
+        - name: "Start hdfs"
+          shell: /usr/local/hadoop/sbin/start-dfs.sh
+
+        - name: "Start Yarn"
+          shell: /usr/local/hadoop/sbin/start-yarn.sh
+
+- name: "Set up NameNode services to start at boot"
+  hosts: "{{ groups[target_server_group][0] }}"
+  become: yes
+  vars:
+    stat_file: "/etc/hadoop.installed"
+  tasks:
+    - name: NameNode Block
+      block:
+        - name: Enable NameNode services and ensure they are not masked
+          systemd:
+            name: "{{ item.name }}"
+            enabled: yes
+            masked: no
+          with_items:
+            - { name: namenode }
+            - { name: secondarynamenode }
+            - { name: resourcemanager }
+#TODO: Drop facts after each role to allow for skipping
+#TODO: Setup cron tasks to sync roles
+
+# - name: Deploy dev pubkeys
+#   hosts: all
+#   become: yes
+#   pre_task:
+#     - name: Wait for all nodes
+#       wait_for:
+#         port: 22
+#         host: "{{ item }}"
+#       loop:
+#         - "{{ ansible_inventory_ip }}"
+#   tasks:
+#     - name: Store keys from Azure Vault
+#     - name: Add to Admin users authorized keys

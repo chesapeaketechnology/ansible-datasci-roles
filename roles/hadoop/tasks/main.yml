@@ -1,0 +1,11 @@
+---
+- name: Validate Hadoop Installed
+  stat:
+    path: "{{ stat_file }}"
+  register: hadoop_install_query
+
+- include: hadoop_install.yml
+  when: hadoop_install_query.stat.exists == False
+
+- include: hadoop_conf.yml
+  when: hadoop_install_query.stat.exists == False

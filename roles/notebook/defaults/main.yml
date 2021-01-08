@@ -1,0 +1,12 @@
+jupyter_home: /usr/local/bin
+jupyter_user: jupyter
+jupyter_group: jupyter
+jupyter_conf: /home/{{ jupyter_user }}/.jupyter
+
+#jupyter_ssl_path: /etc/ssl/private
+jupyter_key: /etc/pki/tls/private/jupyter.key
+jupyter_csr: /etc/pki/tls/private/jupyter.csr
+jupyter_cert: /etc/pki/tls/private/jupyter.pem
+
+ssh_public_key: "~/.ssh/id_rsa.pub"
+ssh_private_key: "~/.ssh/id_rsa"
