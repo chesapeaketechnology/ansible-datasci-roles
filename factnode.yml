@@ -8,7 +8,7 @@
       wait_for:
         port: 8500
         host: "{{ consul_server }}"
-        delay: 120
+        delay: 30
         timeout: 1800
   roles:
     - { role: "consul", private_ips: ["{{ consul_server }}"], is_server: false }
