@@ -131,4 +131,11 @@
             key: reverseproxy/admin_user/email
             value: "{{ admin_email }}"
           when: reverseproxy_email.data is none
+
+    - block:
+        - name: Ensure Firewall ports are open
+          firewalld:
+            port: 9100/tcp
+            permanent: true
+            state: enabled
 ## store exporter info in Consul
