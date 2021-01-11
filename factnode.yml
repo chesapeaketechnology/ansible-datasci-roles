@@ -13,3 +13,4 @@
   roles:
     - { role: "consul", private_ips: ["{{ consul_server }}"], is_server: false }
     - role: "postgresql"
+    - role: "cloudalchemy.node-exporter"

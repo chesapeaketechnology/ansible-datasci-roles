@@ -1,1 +1,2 @@
-## FUTURE USE
+roles:
+  - name: cloudalchemy.node-exporter
