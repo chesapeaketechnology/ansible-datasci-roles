@@ -2,3 +2,4 @@
 - src: geerlingguy.certbot
 - src: geerlingguy.java
 - src: bdellegrazie.nginx_exporter
+- src: cloudalchemy.node-exporter
