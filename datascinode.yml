@@ -11,6 +11,9 @@
       when: ansible_hostname != is_leader
   roles:
     - role: "common"
+    - role: "consul"
+      vars:
+        is_leader: "{{ groups[target_server_group][0] }}"
     - role: "hadoop"
     - {
         role: "spark",
@@ -19,9 +22,6 @@
     - role: "spark-cluster-admin"
     - role: "notebook"
     - role: "cloudalchemy.node-exporter"
-    - role: "consul"
-      vars:
-        is_leader: "{{ groups[target_server_group][0] }}"
 
 - name: "Store all Azure deployment facts to Consul from one node"
   hosts: "{{ groups[target_server_group][0] }}"
