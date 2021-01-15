@@ -42,26 +42,26 @@
     dest: "{{ hadoop_bin_tmp }}"
     timeout: 600
 
-# - name: Download the corresponding cryptographic signature file
-#   get_url:
-#     url: "{{ hadoop_sig_url }}"
-#     dest: "{{ hadoop_sig_tmp }}"
-#     timeout: 600
+- name: Download the corresponding cryptographic signature file
+  get_url:
+    url: "{{ hadoop_sig_url }}"
+    dest: "{{ hadoop_sig_tmp }}"
+    timeout: 600
 
-# - name: Download the hadoop PGP keys
-#   get_url:
-#     url: "{{ hadoop_keys_url }}"
-#     dest: "{{ hadoop_keys_tmp }}"
-#     timeout: 600
-#   changed_when: False
+- name: Download the hadoop PGP keys
+  get_url:
+    url: "{{ hadoop_keys_url }}"
+    dest: "{{ hadoop_keys_tmp }}"
+    timeout: 600
+  changed_when: False
 
-# - name: Import hadoop PGP keys
-#   shell: gpg --import {{ hadoop_keys_tmp }}
-#   changed_when: False
+- name: Import hadoop PGP keys
+  shell: gpg --import {{ hadoop_keys_tmp }}
+  changed_when: False
 
-# - name: Verify hadoop binary package archive authenticity
-#   shell: gpg --verify {{ hadoop_sig_tmp }} {{ hadoop_bin_tmp }}
-#   changed_when: False
+- name: Verify hadoop binary package archive authenticity
+  shell: gpg --verify {{ hadoop_sig_tmp }} {{ hadoop_bin_tmp }}
+  changed_when: False
 
 - name: Extract downloaded hadoop archive
   unarchive:
