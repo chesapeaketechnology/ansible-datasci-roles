@@ -1,5 +1,6 @@
-- src: geerlingguy.nginx
-- src: geerlingguy.certbot
-- src: geerlingguy.java
-- src: bdellegrazie.nginx_exporter
-- src: cloudalchemy.node-exporter
+roles:
+  - name: geerlingguy.nginx
+  - name: geerlingguy.certbot
+  - name: geerlingguy.java
+  - name: bdellegrazie.nginx_exporter
+  - name: cloudalchemy.node-exporter
