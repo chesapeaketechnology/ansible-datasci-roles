@@ -40,17 +40,18 @@
       apt: name=cron state=present
       when: ansible_os_family == 'Debian'
 
-    - name: "Install pip2"
+    - name: "Install pip3"
       package:
-        name: python-pip
+        name: python3-pip
         state: latest
 
-    - name: "Upgrade pip2"
-      shell: pip install --upgrade pip
+    - name: "Upgrade pip3"
+      command: pip3 install --upgrade pip
 
     - name: "Install python-consul module"
       pip:
         name: python-consul
+        executable: pip3
 
     - name: "Check if dhparam.pem exists"
       stat:
@@ -132,4 +133,3 @@
             key: reverseproxy/admin_user/email
             value: "{{ admin_email }}"
           when: reverseproxy_email.data is none
-## store exporter info in Consul
