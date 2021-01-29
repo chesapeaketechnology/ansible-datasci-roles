@@ -51,7 +51,6 @@
     - name: "Install python-consul module"
       pip:
         name: python-consul
-        executable: pip3
 
     - name: "Check if dhparam.pem exists"
       stat:
