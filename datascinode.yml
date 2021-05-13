@@ -25,7 +25,7 @@
       }
     - role: "spark-cluster-admin"
     - role: "notebook"
-    - role: "cloudalchemy.node-exporter"
+    - role: "cloudalchemy.node_exporter"
 
 - name: "Store all Azure deployment facts to Consul from one node"
   hosts: "{{ groups[target_server_group][0] }}"

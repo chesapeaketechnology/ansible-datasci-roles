@@ -1,27 +1,24 @@
 ---
 - block:
-  - name: "Get DB name from Consul"
-    consul_kv:
-      key: postgresql/db/name
-    register: postgresql_db_name
+    - name: "Get DB name from Consul"
+      shell: /usr/local/bin/consul kv get postgresql/db/name
+      register: postgresql_db_name
 
-  - name: "Get postgresql admin user name from Consul"
-    consul_kv:
-      key: postgresql/user/name
-    register: postgresql_user_name
+    - name: "Get postgresql admin user name from Consul"
+      shell: /usr/local/bin/consul kv get postgresql/user/name
+      register: postgresql_user_name
 
-  - name: "Get admin user password from Consul"
-    consul_kv:
-      key: postgresql/user/password
-    register: postgresql_user_password
+    - name: "Get admin user password from Consul"
+      shell: /usr/local/bin/consul kv get postgresql/user/password
+      register: postgresql_user_password
 
 - name: "Create cellids table"
   postgresql_table: 
-    db: "{{ postgresql_db_name.data['Value'] }}"
+    db: "{{ postgresql_db_name.stdout }}"
     name: cellids
-    owner: "{{ postgresql_user_name.data['Value'] }}"
-    login_user: "{{ postgresql_user_name.data['Value'] }}"
-    login_password: "{{ postgresql_user_password.data['Value'] }}"
+    owner: "{{ postgresql_user_name.stdout }}"
+    login_user: "{{ postgresql_user_name.stdout }}"
+    login_password: "{{ postgresql_user_password.stdout }}"
     columns: 
     - mcc smallint
     - mnc smallint
@@ -34,11 +31,11 @@
 
 - name: "Create observed_cellids table"
   postgresql_table: 
-    db: "{{ postgresql_db_name.data['Value'] }}"
+    db: "{{ postgresql_db_name.stdout }}"
     name: observed_cellids
-    owner: "{{ postgresql_user_name.data['Value'] }}"
-    login_user: "{{ postgresql_user_name.data['Value'] }}"
-    login_password: "{{ postgresql_user_password.data['Value'] }}"
+    owner: "{{ postgresql_user_name.stdout }}"
+    login_user: "{{ postgresql_user_name.stdout }}"
+    login_password: "{{ postgresql_user_password.stdout }}"
     columns: 
     - mcc smallint
     - mnc smallint
@@ -50,9 +47,9 @@
 
 - name: "Create procedure for updating cellids"
   postgresql_query:
-    db:  "{{ postgresql_db_name.data['Value'] }}"
-    login_user: "{{ postgresql_user_name.data['Value'] }}"
-    login_password: "{{ postgresql_user_password.data['Value'] }}"
+    db:  "{{ postgresql_db_name.stdout }}"
+    login_user: "{{ postgresql_user_name.stdout }}"
+    login_password: "{{ postgresql_user_password.stdout }}"
     query: |
       CREATE OR REPLACE FUNCTION update_cellids()
       RETURNS TRIGGER AS
@@ -67,9 +64,9 @@
 
 - name: "Create trigger"
   postgresql_query:
-    db: "{{ postgresql_db_name.data['Value'] }}"
-    login_user: "{{ postgresql_user_name.data['Value'] }}"
-    login_password: "{{ postgresql_user_password.data['Value'] }}"
+    db: "{{ postgresql_db_name.stdout }}"
+    login_user: "{{ postgresql_user_name.stdout }}"
+    login_password: "{{ postgresql_user_password.stdout }}"
     query: |
       DROP TRIGGER IF EXISTS new_cellids ON observed_cellids;
       CREATE TRIGGER new_cellids

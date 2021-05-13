@@ -2,5 +2,5 @@ collections:
   - name: azure.azcollection
 
 roles:
-  - name: cloudalchemy.node-exporter
+  - name: cloudalchemy.node_exporter
   - name: geerlingguy.java

@@ -10,11 +10,3 @@
   package:
       name: epel-release
   when: ansible_os_family == 'RedHat'
-
-- name: "Install pip2"
-  package:
-    name: python-pip
-    state: latest
-
-- name: "Upgrade pip2"
-  command: pip install --upgrade pip

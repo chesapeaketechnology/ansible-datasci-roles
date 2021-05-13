@@ -2,7 +2,7 @@
 - name: "Install python modules needed by Jupyter"
   pip:
     name: ["pexpect", "cryptography", "PyOpenSSL", "python-consul"]
-    executable: pip
+    executable: pip3
 
 - block:
     - name: "Create a dedicated group to run Jupyter"
@@ -53,7 +53,7 @@
 #     mode: '0644'
 
 - name: Refresh PIP Library
-  shell: "pip uninstall cryptography -y --no-input && pip install paramiko -U --no-input"
+  shell: "pip3 uninstall cryptography -y --no-input && pip3 install paramiko -U --no-input"
 
 - name: "Generate an OpenSSL private key"
   openssl_privatekey:

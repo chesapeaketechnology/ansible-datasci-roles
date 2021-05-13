@@ -2,6 +2,7 @@
 - name: "Install python-consul module"
   pip:
     name: python-consul
+    executable: pip3
 
 - name: "Register all deployed eventhubs"
   include_tasks: azure-namespace-facts.yml
